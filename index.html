@@ -23,20 +23,31 @@ rect {
   stroke: #1fa6df;
 }
 
-button {
+.reset {
   position: absolute;
   right: 30px;
   top: 30px;
 }
 
+.stop {
+  position: absolute;
+  right: 80px;
+  top: 30px; 
+}
+
+
+
 </style>
-<button>Reset</button>
+<button class="reset">Reset</button>
+<button class="stop">Stop</button>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 1000 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
+
+var isPlaying = true;
 
 var x = d3.scale.linear()
     .domain([-width / 2, width / 2])
@@ -49,8 +60,19 @@ var y = d3.scale.linear()
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .ticks(150)
+    .ticks(50)
     .tickSize(-height);
+
+    d3.selectAll("g.y.axis g.tick line")
+    .attr("x2", function(d){
+    //d for the tick line is the value
+    //of that tick 
+    //(a number between 0 and 1, in this case)
+       if ( (10*d)%2 ) //if it's an even multiple of 10%
+           return 10;
+       else
+           return 4;
+    });
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -84,15 +106,28 @@ svg.append("g")
 //     .attr("class", "y axis")
 //     .call(yAxis);
 
-d3.select("button").on("click", reset);
+d3.select(".reset").on("click", reset);
+d3.select(".stop").on("click", stop);
+
+function stop() {
+  if (isPlaying) {
+    d3.select(".stop").text("Start");
+  } else {
+    d3.select(".stop").text("Stop");
+  }
+  isPlaying = !isPlaying;
+
+}
 
 function render() {
-  console.log('rendering');
-    // move left
-  var newX = x.domain();
-  newX = x.domain([newX[0]-1, newX[1]-1]);
-  zoom.x(newX);
-  zoomed();
+  if (isPlaying) {
+      console.log('rendering');
+      // move left
+    var newX = x.domain();
+    newX = x.domain([newX[0]-1, newX[1]-1]);
+    zoom.x(newX);
+    zoomed();
+  }
 }
 
 d3.timer(render);
