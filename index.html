@@ -25,13 +25,13 @@ rect {
 
 .reset {
   position: absolute;
-  right: 30px;
+  left: 50px;
   top: 30px;
 }
 
 .stop {
   position: absolute;
-  right: 80px;
+  left: 100px;
   top: 30px; 
 }
 
@@ -44,7 +44,7 @@ rect {
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 1000 - margin.left - margin.right,
+    width = 600 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 var isPlaying = true;
@@ -60,19 +60,8 @@ var y = d3.scale.linear()
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .ticks(50)
+    .ticks(90)
     .tickSize(-height);
-
-    d3.selectAll("g.y.axis g.tick line")
-    .attr("x2", function(d){
-    //d for the tick line is the value
-    //of that tick 
-    //(a number between 0 and 1, in this case)
-       if ( (10*d)%2 ) //if it's an even multiple of 10%
-           return 10;
-       else
-           return 4;
-    });
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -119,6 +108,14 @@ function stop() {
 
 }
 
+function randomizeTickSizes() {
+      d3.selectAll("line")
+      .attr("stroke-width", function(d){
+        var strokeWidth = getRandomInt(1,20);
+        return strokeWidth;
+      });
+}
+
 function render() {
   if (isPlaying) {
       console.log('rendering');
@@ -129,8 +126,12 @@ function render() {
     zoomed();
   }
 }
-
+// randomizeTickSizes();
 d3.timer(render);
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 function zoomed() {
   svg.select(".x.axis").call(xAxis);
