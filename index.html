@@ -49,6 +49,7 @@ var y = d3.scale.linear()
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
+    .ticks(150)
     .tickSize(-height);
 
 var yAxis = d3.svg.axis()
@@ -91,10 +92,7 @@ function render() {
   var newX = x.domain();
   newX = x.domain([newX[0]-1, newX[1]-1]);
   zoom.x(newX);
-
-  // zoom.x(x.domain(ix(t))).y(y.domain(iy(t)));
   zoomed();
-
 }
 
 d3.timer(render);
